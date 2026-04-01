@@ -1,11 +1,12 @@
-#ifndef LINK_UI_HELPER_H
-#define LINK_UI_HELPER_H
+#ifndef LINK_UI_IMPL_H
+#define LINK_UI_IMPL_H
 
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
 #include "../core/types.h"
 
+/* I'll update this setup once I have time */
 namespace ll {
 
 typedef struct link_ui {

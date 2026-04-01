@@ -6,7 +6,7 @@
 using namespace geode::prelude;
 
 #include "../core/types.h"
-#include "../utils/link_ui_impl.h"
+#include "../core/link_ui_impl.h"
 
 namespace ll {
 

@@ -19,10 +19,11 @@ namespace ll {
 class custom_level_cell;
 class level_link_modal : public FLAlertLayer, public FLAlertLayerProtocol, public LevelManagerDelegate {
 public:
-    bool init(GJGameLevel* current_level, link_ui&);
+    /* If layer_ui is null, I'm fucked */
+    bool init(GJGameLevel* current_level, link_ui& layer_ui);
     void set_selected_level(GJGameLevel* level);
 
-    static level_link_modal* create(GJGameLevel* current_level, link_ui&);
+    static level_link_modal* create(GJGameLevel* current_level, link_ui& layer_ui);
     
     void update(float dt);
 
@@ -55,12 +56,10 @@ private:
     void onClose(CCObject*);
 
 private:
-    // Alert UI
     NineSlice* m_background;
     CCMenuItemSpriteExtra* m_close_btn;
     CCLabelBMFont* m_title;
 
-    // Content UI
     CCLabelBMFont* m_type_str;
     ScrollLayer* m_scroll_layer; 
     TextInput* m_id_search_input;
@@ -68,7 +67,6 @@ private:
     CCLabelBMFont* m_selected_cell_header;
     custom_level_cell* m_selected_cell;
 
-    // Data
     bool m_schedule_update_display;
     level_link_type m_type;
     link_ui* m_parent_ui;
@@ -76,6 +74,7 @@ private:
     GJGameLevel* m_current_level;
     GJGameLevel* m_selected_level;
 
+    /* Stupid hack */
     std::chrono::steady_clock::time_point m_last_search_time;
 };
 

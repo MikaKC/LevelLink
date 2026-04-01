@@ -14,5 +14,13 @@
 	"dependencies": {
 		"geode.node-ids": ">=v1.20.0",
 		"cvolton.level-id-api": ">=v2.0.0"
+	},
+	"settings": {
+		"use-text-buttons": {
+			"name": "Use text buttons",
+			"description": "Replaces all of the link icon sprites to link text sprites.",
+			"type": "bool",
+			"default": false
+		}
 	}
 }

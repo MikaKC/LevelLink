@@ -5,8 +5,6 @@
 
 #include "../ui/level_link_modal.h"
 
-#include "../utils/link_ui_impl.h"
-
 #include <cvolton.level-id-api/include/EditorIDs.hpp>
 
 #define MOD Mod::get()

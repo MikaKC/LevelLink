@@ -1,7 +1,7 @@
 #include "link_ui_impl.h"
 
-#include "../core/linking_manager.h"
-#include "../core/level_downloader.h"
+#include "linking_manager.h"
+#include "level_downloader.h"
 
 #include <cvolton.level-id-api/include/EditorIDs.hpp>
 
@@ -42,21 +42,41 @@ level_link_data load_data(int self_id, bool& found_data) {
 }
 
 void create_ui(CCLayer* self, link_ui& btns) {    
-    CircleButtonSprite* modal_spr = create_circle_btn("Link");
+    bool use_text_buttons = Mod::get()->getSettingValue<bool>("use-text-buttons");
+    
+    auto generic_button_sprite_func = [&](const char* sprite, const char* alias) -> CCNode* {
+        CCNode* out = NULL;
+        if(use_text_buttons) out = create_circle_btn(alias);
+        else out = CCSprite::createWithSpriteFrameName(sprite);
+
+        if(!out) {
+            geode::log::error("Failed to get sprite for button!");
+            return NULL;
+        }
+
+        return out;
+    };
+
+    CCNode* modal_spr = generic_button_sprite_func("gj_linkBtn_001.png", "Link");
+    if(!use_text_buttons) modal_spr->setScale(1.25f);
+
     btns.create_link_btn = CCMenuItemSpriteExtra::create(
         modal_spr,
         self,
         NULL
     );
 
-    CircleButtonSprite* open_spr = create_circle_btn("Open");
+    CCNode* open_spr = generic_button_sprite_func("GJ_playBtn2_001.png", "Open");
+    if(!use_text_buttons) open_spr->setScale(0.6f);
+
     btns.open_link_btn = CCMenuItemSpriteExtra::create(
         open_spr,
         self,
         NULL
     );
 
-    CircleButtonSprite* unlink_spr = create_circle_btn("Unlk");
+    CCNode* unlink_spr = generic_button_sprite_func("gj_linkBtnOff_001.png", "Unlk");
+    
     btns.break_link_btn = CCMenuItemSpriteExtra::create(
         unlink_spr,
         self,
@@ -71,8 +91,10 @@ void create_ui(CCLayer* self, link_ui& btns) {
 }
 
 void layout_ui(link_ui& btns, link_ui_orientation orientation) {
-    float btn_width = btns.create_link_btn->getScaledContentWidth();
-    float btn_height = btns.create_link_btn->getScaledContentHeight();
+    bool use_text_buttons = Mod::get()->getSettingValue<bool>("use-text-buttons");
+
+    float btn_width = btns.open_link_btn->getScaledContentWidth();
+    float btn_height = btns.open_link_btn->getScaledContentHeight();
     
     float menu_width = btn_width;
     float menu_height = btn_height;
@@ -96,15 +118,28 @@ void layout_ui(link_ui& btns, link_ui_orientation orientation) {
     if(orientation == link_ui_orientation::landscape) btn_x = menu_width * 0.25f;
     else if(orientation == link_ui_orientation::portrait) btn_y = menu_height * 0.25f; 
 
-    btns.open_link_btn->setPosition(CCPoint {
-        btn_x,
-        orientation == link_ui_orientation::landscape ? btn_y : btn_y * 3
-    });
+    if(use_text_buttons) {
+        btns.open_link_btn->setPosition(CCPoint {
+            btn_x,
+            orientation == link_ui_orientation::landscape ? btn_y : btn_y * 3
+        });
 
-    btns.break_link_btn->setPosition(CCPoint {
-        orientation == link_ui_orientation::landscape ? btn_x * 3 : btn_x,
-        btn_y,
-    });
+        btns.break_link_btn->setPosition(CCPoint {
+            orientation == link_ui_orientation::landscape ? btn_x * 3 : btn_x,
+            btn_y,
+        });
+    } else {
+        const float middle_padding = 5.f;
+        btns.open_link_btn->setPosition(CCPoint {
+            menu_width * 0.5f,
+            menu_height * 0.5f + (btns.break_link_btn->getScaledContentHeight() * 0.5f) + middle_padding 
+        });
+
+        btns.break_link_btn->setPosition(CCPoint {
+            menu_width * 0.5f,
+            menu_height * 0.5f - (btns.break_link_btn->getScaledContentHeight() * 0.5f) - middle_padding
+        });
+    }
 }
 
 void update_ui_draw(const link_ui& btns, bool found_link) {

@@ -31,7 +31,6 @@ void edit_level_layer_hook::on_open_btn_pressed(CCObject* obj) {
 }
 
 void edit_level_layer_hook::on_modal_btn_pressed(CCObject* obj) {
-    /* UI must persist since it's stored as a pointer in level_link_modal */
     level_link_modal::create(this->m_level, this->m_fields->m_ui)->show();
 }
 

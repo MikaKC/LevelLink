@@ -136,7 +136,6 @@ void combo_box::create_option(const char* title, uint8_t id) {
     label->setOpacity(0);
     label->setEnabled(false);
     
-
     float y_pos = 0;
     if(this->combo_labels.size() > 1) {
         CCMenuItemSpriteExtra* last_label = this->combo_labels[this->combo_labels.size() - 2].label;

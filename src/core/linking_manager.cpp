@@ -4,7 +4,7 @@
 
 namespace ll {
 
-linking_manager::linking_manager() : m_link_data(nh::json::array()), m_is_info_layer(false), m_cached_data({}) {}
+linking_manager::linking_manager() : m_link_data(nh::json::array()), m_cached_data({}) {}
 
 void linking_manager::create_link(level_link_data data) {
     if(this->m_link_data.empty()) {
@@ -114,14 +114,6 @@ const std::vector<level_link_data>& linking_manager::get_all_links() {
     }
 
     return this->m_cached_data;
-}
-
-bool linking_manager::is_info_layer() const {
-    return this->m_is_info_layer;
-}
-
-void linking_manager::set_info_layer(bool v) {
-    this->m_is_info_layer = v;
 }
 
 void linking_manager::set_current_data(const level_link_data& data) {

@@ -20,8 +20,6 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
     this->m_current_level = current_level;
     this->m_parent_ui = &current_link_ui;
 
-    geode::log::debug("{}", this->m_current_level);
-
     this->m_mainLayer = CCLayer::create();
     this->addChild(this->m_mainLayer);
 
@@ -172,18 +170,25 @@ void level_link_modal::setup_modal_ui() {
         3.f*(this->m_mainLayer->getScaledContentSize().height / 4) - 10.f
     });
 
-    this->m_selected_cell = NULL;
+    this->m_selected_cell = custom_level_cell::create(nullptr, this, true);
+    this->m_mainLayer->addChild(this->m_selected_cell);
+    
     this->m_selected_cell_header = CCLabelBMFont::create("Selected:", "bigFont.fnt");
     this->m_selected_cell_header->setScale(0.5f);
-
+    
     this->m_selected_cell_header->setPosition(CCPoint {
         this->m_mainLayer->getScaledContentSize().width / 4 - 10.f,
         (this->m_mainLayer->getScaledContentSize().height / 2) - 20.f
     });
-
+    
     this->m_mainLayer->addChild(this->m_selected_cell_header, 2);
-
+    
     this->setup_level_scroll();
+
+    this->m_selected_cell->setPosition({
+        (this->m_mainLayer->getScaledContentSize().width / 4) - (this->m_selected_cell->getScaledContentSize().width / 2) - 10.f,
+        this->m_scroll_layer->getPositionY()
+    });
 }
 
 void level_link_modal::setup_level_scroll() {        
@@ -366,16 +371,6 @@ void level_link_modal::update_editor_scroll() {
 }
 
 void level_link_modal::update_selected_level() {
-    if(!this->m_selected_cell) {
-        this->m_selected_cell = custom_level_cell::create(this->m_selected_level, this, true);
-        this->m_mainLayer->addChild(this->m_selected_cell);
-        this->m_selected_cell->setPosition({
-            (this->m_mainLayer->getScaledContentSize().width / 4) - (this->m_selected_cell->getScaledContentSize().width / 2) - 10.f,
-            this->m_scroll_layer->getPositionY()
-        });
-        return;
-    }
-
     this->m_selected_cell->update_display(this->m_selected_level);
 }
 

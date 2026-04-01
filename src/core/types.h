@@ -8,7 +8,7 @@ namespace ll {
 enum class level_link_type {
     undefined = -1,
     editor = 0,
-    online = 1
+    online = 1,
 };
 
 level_link_type str_to_level_link_type(const std::string& str);
