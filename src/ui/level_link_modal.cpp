@@ -132,7 +132,7 @@ void level_link_modal::setup_modal_ui() {
         (3.f * (this->m_mainLayer->getScaledContentSize().height / 4.f)) - (type_combo->getScaledContentHeight()) - 10.f
     });
 
-    this->m_mainLayer->addChild(type_combo, 3);
+    this->m_mainLayer->addChild(type_combo, 5);
 
     /* Loading Circle */
     this->m_loading_circle = LoadingCircleSprite::create(1.f);
@@ -173,13 +173,15 @@ void level_link_modal::setup_modal_ui() {
     });
 
     this->m_selected_cell = NULL;
-    this->m_selected_cell_header = CCLabelBMFont::create("Selected:", "goldFont.fnt");
+    this->m_selected_cell_header = CCLabelBMFont::create("Selected:", "bigFont.fnt");
+    this->m_selected_cell_header->setScale(0.5f);
+
     this->m_selected_cell_header->setPosition(CCPoint {
-        this->m_mainLayer->getScaledContentSize().width / 4,
+        this->m_mainLayer->getScaledContentSize().width / 4 - 10.f,
         (this->m_mainLayer->getScaledContentSize().height / 2) - 20.f
     });
 
-    this->m_mainLayer->addChild(this->m_selected_cell_header, 3);
+    this->m_mainLayer->addChild(this->m_selected_cell_header, 2);
 
     this->setup_level_scroll();
 }

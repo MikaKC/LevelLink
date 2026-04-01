@@ -28,17 +28,13 @@ bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool n
         else if(level->m_stars > 5 && level->m_stars < 8) level_icon = 4; /* Harder */
         else if(level->m_stars > 7 && level->m_stars < 10) level_icon = 5; /* Insane */
         else if(level->m_stars > 9) level_icon = 6; /* Demon (although it changes below if demon) */
-        else level_icon = 11; /* Auto levels are N/A, although GJDifficulty #0 is auto... */
+        else level_icon = -1; /* Auto is -1, apparently... */
     } else {
         /* Levels with no stars get the avg difficulty's face ig */
         level_icon = level->getAverageDifficulty();
     }
 
     this->m_difficulty = GJDifficultySprite::create(level_icon, GJDifficultyName::Short);
-
-    if (level->m_autoLevel) {
-        this->m_difficulty->updateDifficultyFrame(0, GJDifficultyName::Short);
-    }
 
     if(level->m_demon) {
         this->m_difficulty->updateDifficultyFrame(
@@ -47,7 +43,10 @@ bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool n
         );
     }
 
-    this->m_difficulty->updateFeatureStateFromLevel(level);
+    if(level->m_levelType != GJLevelType::Editor) {
+        this->m_difficulty->updateFeatureStateFromLevel(level);
+    }
+    
     this->m_difficulty->setAnchorPoint(CCPoint { 0.5f, 0.5f });
     this->m_difficulty->setScale(0.5f);
     

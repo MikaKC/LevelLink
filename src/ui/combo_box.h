@@ -10,7 +10,7 @@ using combo_callback = std::function<void(uint16_t)>;
 
 typedef struct combo_label {
     std::string title;
-    cocos2d::CCMenuItemLabel* label;
+    CCMenuItemSpriteExtra* label;
 } combo_label;
 
 /* Combo box node

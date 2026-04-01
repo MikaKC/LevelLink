@@ -62,8 +62,14 @@ void combo_box::set_combo_callback(combo_callback cb) {
 
 void combo_box::on_child_click(cocos2d::CCObject* sender) {
     if(!this->is_open) return; 
-    cocos2d::CCMenuItemLabel* label = static_cast<cocos2d::CCMenuItemLabel*>(sender);
-    cocos2d::CCLabelBMFont* label_spr = static_cast<cocos2d::CCLabelBMFont*>(label->getLabel());
+    
+    CCMenuItemSpriteExtra* label = static_cast<CCMenuItemSpriteExtra*>(sender);
+    cocos2d::CCLabelBMFont* label_spr = static_cast<cocos2d::CCLabelBMFont*>(label->getNormalImage());
+    
+    if(!label_spr)  {
+        geode::log::error("Combo box item is not a label!");
+        return;
+    }
 
     this->set_combo_title(label_spr->getString());
     if(this->label_callback) this->label_callback(sender->getTag());
@@ -120,19 +126,20 @@ void combo_box::set_combo_title(const char* title) {
 
 void combo_box::create_option(const char* title, uint8_t id) {
     cocos2d::CCLabelBMFont* label_spr = cocos2d::CCLabelBMFont::create(title, "bigFont.fnt");
-    cocos2d::CCMenuItemLabel* label = cocos2d::CCMenuItemLabel::create(label_spr, this, menu_selector(combo_box::on_child_click));
+    const float maximum_width = this->getScaledContentWidth() / 2.f;
+    label_spr->setScale(maximum_width / label_spr->getContentWidth());
+
+    CCMenuItemSpriteExtra* label = CCMenuItemSpriteExtra::create(label_spr, this, menu_selector(combo_box::on_child_click));
     this->combo_labels.insert(std::pair(id, combo_label { title, label }));
     
     label->setTag(id);
     label->setOpacity(0);
     label->setEnabled(false);
     
-    const float maximum_width = this->getScaledContentWidth() / 2.f;
-    label->setScale(maximum_width / label->getContentWidth());
 
     float y_pos = 0;
     if(this->combo_labels.size() > 1) {
-        CCMenuItemLabel* last_label = this->combo_labels[this->combo_labels.size() - 2].label;
+        CCMenuItemSpriteExtra* last_label = this->combo_labels[this->combo_labels.size() - 2].label;
         y_pos = (last_label->getPositionY() - (last_label->getScaledContentHeight() / 2)) - label->getScaledContentHeight() * 1.1f;
     }
 
