@@ -10,7 +10,11 @@
 	"name": "Level Link",
 	"version": "v1.0.0",
 	"developer": "MikaKC",
-	"description": "Link two levels and access them with the click of a button.",
+	"description": "Link two levels and access them with the click of a button!",
+	"links": {
+		"source": "https://github.com/MikaKC/LevelLink"
+	},
+	"tags": [ "gameplay", "enhancement", "utility", "customization" ],
 	"dependencies": {
 		"geode.node-ids": ">=v1.20.0",
 		"cvolton.level-id-api": ">=v2.0.0"
