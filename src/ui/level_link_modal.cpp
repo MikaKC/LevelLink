@@ -2,6 +2,7 @@
 
 #include "custom_level_cell.h"
 
+#include "../core/node_ids.h"
 #include "../core/linking_manager.h"
 
 #include <cvolton.level-id-api/include/EditorIDs.hpp>
@@ -69,7 +70,7 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
     
     this->scheduleUpdate();
 
-    geode::cocos::handleTouchPriority(this); // Fix touch prios
+    geode::cocos::handleTouchPriority(this);
 
     return true;
 }
@@ -79,7 +80,7 @@ void level_link_modal::setup_modal_ui() {
     ButtonSprite* link_spr = ButtonSprite::create(
         "Link", 
         "goldFont.fnt",
-        get_btn_texture_for_base(button_sprite_base::green)
+        ll::utils::get_btn_texture_for_base(ll::utils::button_sprite_base::green)
     );
 
     CCMenuItemSpriteExtra* link_btn = CCMenuItemSpriteExtra::create(
@@ -87,6 +88,8 @@ void level_link_modal::setup_modal_ui() {
         this,
         menu_selector(level_link_modal::on_link_btn_pressed)
     );
+
+    link_btn->setID(LL_ID_MODAL_LINK_BTN);
 
     this->m_buttonMenu->addChild(link_btn);
     link_btn->setPosition(CCPoint {
@@ -100,6 +103,8 @@ void level_link_modal::setup_modal_ui() {
     this->m_type_str = CCLabelBMFont::create("Level Type", "bigFont.fnt");
     this->m_mainLayer->addChild(this->m_type_str, 3);
     this->m_type_str->setScale(0.5f);
+
+    this->m_type_str->setID(LL_ID_MODAL_TYPE_LABEL);
 
     this->m_type_str->setPosition(CCPoint {
         this->m_mainLayer->getScaledContentSize().width / 4 - 10.f,
@@ -124,6 +129,8 @@ void level_link_modal::setup_modal_ui() {
                 break;
         }
     });
+    
+    type_combo->setID(LL_ID_MODAL_TYPE_COMBO);
 
     type_combo->setPosition(CCPoint {
         (this->m_mainLayer->getScaledContentSize().width / 4) - (type_combo->getScaledContentWidth() / 2) - 10.f,
@@ -140,6 +147,8 @@ void level_link_modal::setup_modal_ui() {
         (this->m_mainLayer->getScaledContentSize().height / 2) - 20.f
     });
 
+    this->m_loading_circle->setID(LL_ID_MODAL_BUFFER_CIRCLE);
+
     this->m_loading_circle->setScale(0.5f);
     this->m_loading_circle->setOpacity(128);
 
@@ -147,7 +156,10 @@ void level_link_modal::setup_modal_ui() {
 
     /* Id & Search input */
     this->m_schedule_update_display = false;
+
     this->m_id_search_input = TextInput::create(200, "Search...");
+    this->m_id_search_input->setID(LL_ID_MODAL_SEARCH);
+
     this->m_id_search_input->setCallback([&](const std::string& ret) {
         auto now = std::chrono::steady_clock::now();
         
@@ -172,6 +184,7 @@ void level_link_modal::setup_modal_ui() {
 
     this->m_selected_cell = custom_level_cell::create(nullptr, this, true);
     this->m_mainLayer->addChild(this->m_selected_cell);
+    this->m_selected_cell->setID(LL_ID_MODAL_SELECTED_CELL);
     
     this->m_selected_cell_header = CCLabelBMFont::create("Selected:", "bigFont.fnt");
     this->m_selected_cell_header->setScale(0.5f);
@@ -195,6 +208,8 @@ void level_link_modal::setup_level_scroll() {
     this->m_scroll_layer = ScrollLayer::create(
         { 200, 100 }
     );
+
+    this->m_scroll_layer->setID(LL_ID_MODAL_SCROLL);
 
     this->m_scroll_layer->setPosition(CCPoint {
         2.8f*(this->m_mainLayer->getScaledContentSize().width / 4) - (this->m_scroll_layer->getScaledContentSize().width / 2),
@@ -365,7 +380,7 @@ void level_link_modal::update_editor_scroll() {
         return;
     }
 
-    std::vector<GJGameLevel*> sorted_levels = search_levels(vlevels, text);     
+    std::vector<GJGameLevel*> sorted_levels = ll::utils::search_levels(vlevels, text);     
     this->m_loading_circle->setVisible(false);
     this->populate_scroll(sorted_levels);
 }

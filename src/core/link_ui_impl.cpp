@@ -3,6 +3,8 @@
 #include "linking_manager.h"
 #include "level_downloader.h"
 
+#include "node_ids.h"
+
 #include <cvolton.level-id-api/include/EditorIDs.hpp>
 
 namespace ll {
@@ -66,6 +68,8 @@ void create_ui(CCLayer* self, link_ui& btns) {
         NULL
     );
 
+    btns.create_link_btn->setID(LL_ID_LINK_BTN);
+
     CCNode* open_spr = generic_button_sprite_func("GJ_playBtn2_001.png", "Open");
     if(!use_text_buttons) open_spr->setScale(0.6f);
 
@@ -74,6 +78,7 @@ void create_ui(CCLayer* self, link_ui& btns) {
         self,
         NULL
     );
+    btns.open_link_btn->setID(LL_ID_OPEN_BTN);
 
     CCNode* unlink_spr = generic_button_sprite_func("gj_linkBtnOff_001.png", "Unlk");
     
@@ -82,8 +87,10 @@ void create_ui(CCLayer* self, link_ui& btns) {
         self,
         NULL
     );
+    btns.break_link_btn->setID(LL_ID_BREAK_BTN);
     
     btns.buttons_menu = CCMenu::create();
+    btns.buttons_menu->setID(LL_ID_BTN_MENU);
 
     btns.buttons_menu->addChild(btns.create_link_btn);
     btns.buttons_menu->addChild(btns.open_link_btn);

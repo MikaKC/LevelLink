@@ -1,6 +1,7 @@
 #include "custom_level_cell.h"
 
 #include "level_link_modal.h"
+#include "../core/node_ids.h"
 
 #include "../utils/button_sprite_utils.h"
 
@@ -22,14 +23,18 @@ bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool n
     /* Default to N/A (0) */
     this->m_difficulty = GJDifficultySprite::create(0, GJDifficultyName::Short);
     this->addChild(this->m_difficulty, 2);
+
+    this->m_difficulty->setID(LL_ID_CELL_DIFFICULTY);
     
     this->m_name_text = CCLabelBMFont::create("", "bigFont.fnt");
     this->addChild(this->m_name_text, 1);
+    
+    this->m_name_text->setID(LL_ID_CELL_NAME_LABEL);
 
     this->m_select_btn_sprite = ButtonSprite::create(
         "Select", 
         "bigFont.fnt", 
-        get_btn_texture_for_base(button_sprite_base::green)
+        ll::utils::get_btn_texture_for_base(ll::utils::button_sprite_base::green)
     );
     this->m_select_btn_sprite->setScale(0.5f);
 
@@ -40,9 +45,13 @@ bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool n
             menu_selector(custom_level_cell::on_select_btn_pressed)
         );
 
+        select_btn->setID(LL_ID_CELL_SELECT_BTN);
+
         CCMenu* menu = CCMenu::create();
         menu->setContentSize(select_btn->getScaledContentSize());
         menu->setAnchorPoint({ 1.f, 0.5f });
+        menu->setID(LL_ID_CELL_BUTTON_MENU);
+
         menu->addChild(select_btn);
         select_btn->setPosition(menu->getScaledContentSize() / 2);
         this->addChild(menu);

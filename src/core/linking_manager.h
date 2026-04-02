@@ -6,9 +6,6 @@ using namespace geode::prelude;
 
 #include "types.h"
 
-#include "../json.hpp"
-namespace nh = nlohmann;
-
 namespace ll {
 
 class linking_manager {
@@ -35,9 +32,7 @@ private:
 
 private:
     ll::level_link_data m_current_data;
-    
-    nh::json m_link_data;
-    std::vector<level_link_data> m_cached_data;
+    std::vector<level_link_data> m_data;
 };
 
 }

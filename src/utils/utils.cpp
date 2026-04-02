@@ -1,6 +1,6 @@
 #include "utils.h"
 
-namespace ll {
+namespace ll::utils {
 
 /* Search for levels with a matching string */
 std::vector<GJGameLevel*> search_levels(const std::vector<GJGameLevel*>& levels, const std::string& match) {
@@ -56,5 +56,19 @@ std::vector<GJGameLevel*> search_levels(const std::vector<GJGameLevel*>& levels,
 
     return results;
 }
+
+std::vector<std::string> split_string_by_delimiter(const std::string& s, char delim) {
+    std::vector<std::string> ret{};
+    size_t start = 0;
+    size_t end = 0;
+
+    while((end=s.find(delim, start)) != std::string::npos) {
+        if(end != start) ret.push_back(s.substr(start, end-start));
+        start = end+1;
+    }
+    if (start < s.size()) ret.push_back(s.substr(start));
+    return ret;
+}
+
 
 }

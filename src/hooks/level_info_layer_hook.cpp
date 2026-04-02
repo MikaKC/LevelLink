@@ -19,7 +19,6 @@ bool level_info_layer_hook::init(GJGameLevel* level, bool challenge) {
 
     bool ret = ll::init(this, this->m_level, ui);
 
-
     CCNode* difficulty_sprite = this->m_difficultySprite;
     ui.buttons_menu->setPosition(CCPoint {
         difficulty_sprite->getPositionX() - 

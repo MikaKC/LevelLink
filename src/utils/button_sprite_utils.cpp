@@ -1,6 +1,6 @@
 #include "button_sprite_utils.h"
 
-namespace ll {
+namespace ll::utils {
 
 const char* get_btn_texture_for_base(button_sprite_base base) {
     switch(base) {

@@ -4,7 +4,7 @@
 #include <Geode/Geode.hpp>
 using namespace geode::prelude;
 
-namespace ll {
+namespace ll::utils {
 
 enum class button_sprite_base {
     green = 0,
