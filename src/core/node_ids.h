@@ -1,23 +1,26 @@
 #ifndef NODE_IDS_H
 #define NODE_IDS_H
 
-#define LL_ID_LINK_BTN "ll_create_link_btn"
-#define LL_ID_OPEN_BTN "ll_open_link_btn"
-#define LL_ID_BREAK_BTN "ll_break_link_btn"
-#define LL_ID_BTN_MENU "ll_content_menu"
+#define LL_ID_LINK_BTN "ll-create-link-btn"
+#define LL_ID_OPEN_BTN "ll-open-link-btn"
+#define LL_ID_BREAK_BTN "ll-break-link-btn"
+#define LL_ID_BTN_MENU "ll-content-menu"
 
-#define LL_ID_CELL_DIFFICULTY "ll_cell_difficulty_face"
-#define LL_ID_CELL_NAME_LABEL "ll_cell_name_label"
-#define LL_ID_CELL_SELECT_BTN "ll_cell_select_btn"
-#define LL_ID_CELL_BUTTON_MENU "ll_cell_menu"
+#define LL_ID_CELL_DIFFICULTY "ll-cell-difficulty-face"
+#define LL_ID_CELL_NAME_LABEL "ll-cell-name-label"
+#define LL_ID_CELL_SELECT_BTN "ll-cell-select-btn"
+#define LL_ID_CELL_BUTTON_MENU "ll-cell-menu"
 
-#define LL_ID_MODAL "ll_link_modal"
-#define LL_ID_MODAL_LINK_BTN "ll_link_modal_link_btn"
-#define LL_ID_MODAL_TYPE_LABEL "ll_link_modal_type_label"
-#define LL_ID_MODAL_TYPE_COMBO "ll_link_modal_type_combo"
-#define LL_ID_MODAL_BUFFER_CIRCLE "ll_link_modal_buffer_circle"
-#define LL_ID_MODAL_SEARCH "ll_link_modal_search"
-#define LL_ID_MODAL_SELECTED_CELL "ll_link_modal_selected_cell"
-#define LL_ID_MODAL_SCROLL "ll_link_modal_level_list"
+#define LL_ID_MODAL "ll-link-modal"
+#define LL_ID_MODAL_TITLE_LABEL "ll-link-modal-title-label"
+#define LL_ID_MODAL_CLOSE_BTN "ll-link-modal-close-btn"
+#define LL_ID_MODAL_LINK_BTN "ll-link-modal-link-btn"
+#define LL_ID_MODAL_TYPE_LABEL "ll-link-modal-type-label"
+#define LL_ID_MODAL_TYPE_COMBO "ll-link-modal-type-combo"
+#define LL_ID_MODAL_BUFFER_CIRCLE "ll-link-modal-buffer-circle"
+#define LL_ID_MODAL_SEARCH "ll-link-modal-search"
+#define LL_ID_MODAL_SELECTED_CELL "ll-link-modal-selected-cell"
+#define LL_ID_MODAL_SCROLL "ll-link-modal-level-list"
+#define LL_ID_MODAL_SELECTED_LABEL "ll-link-modal-selected-label"
 
 #endif

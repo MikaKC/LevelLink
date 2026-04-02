@@ -15,7 +15,7 @@ bool edit_level_layer_hook::init(GJGameLevel* level) {
 
     ui.buttons_menu->removeFromParent();
 
-    CCMenu* level_edit_menu = static_cast<CCMenu*>(this->getChildByID("level-edit-menu"));
+    CCMenu* level_edit_menu = typeinfo_cast<CCMenu*>(this->getChildByID("level-edit-menu"));
     level_edit_menu->addChild(ui.buttons_menu);
     level_edit_menu->updateLayout();
 

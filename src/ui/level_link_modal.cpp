@@ -54,6 +54,7 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
         0.7f, 
         .1f
     );
+    this->m_title->setID(LL_ID_MODAL_TITLE_LABEL);
 
     this->setup_modal_ui();
     
@@ -64,6 +65,7 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
             this->onClose(btn);
         }
     );
+    this->m_close_btn->setID(LL_ID_MODAL_CLOSE_BTN);
 
     this->m_buttonMenu->addChildAtPosition(this->m_close_btn, geode::Anchor::TopLeft, { 10.f, -10.f });
 
@@ -191,6 +193,7 @@ void level_link_modal::setup_modal_ui() {
     
     this->m_selected_cell_header = CCLabelBMFont::create("Selected:", "bigFont.fnt");
     this->m_selected_cell_header->setScale(0.5f);
+    this->m_selected_cell_header->setID(LL_ID_MODAL_SELECTED_LABEL);
     
     this->m_selected_cell_header->setPosition(CCPoint {
         this->m_mainLayer->getScaledContentSize().width / 4 - 10.f,
