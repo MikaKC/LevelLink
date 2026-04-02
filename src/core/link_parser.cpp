@@ -1,6 +1,8 @@
 #include "link_parser.h"
 #include "../utils/utils.h"
 
+#include <Geode/Geode.hpp>
+
 #include <sstream>
 
 namespace ll::parser {
@@ -39,23 +41,50 @@ std::vector<level_link_data> load_links(const std::string& link_data) {
 
 level_link_data load_link(const std::string& link) {
     std::vector<std::string> components = ll::utils::split_string_by_delimiter(link, LL_ARGUMENT_SEPARATOR);
+    
+    level_link_data invalid = {
+        .level_id = -1,
+        .level_type = level_link_type::undefined,
+        .link_id = -1,
+        .link_type = level_link_type::undefined,
+    };
+    
     if(components.size() < 4) {
         geode::log::error("Link object is incomplete!");
-        return {
-            .level_id = -1,
-            .level_type = level_link_type::undefined,
-            .link_id = -1,
-            .link_type = level_link_type::undefined,
-        };
+        return invalid;
     }
 
-    int level_id = std::stoi(components[0]);
-    int level_type_i = std::stoi(components[1]);
-    level_link_type level_type = (level_link_type)level_type_i;
+    auto level_id_r = geode::utils::numFromString<int>(components[0]);
+    if(!level_id_r.isOk()) {
+        geode::log::error("Failed to parse level id argument!");
+        return invalid;
+    }
 
-    int link_id = std::stoi(components[2]);
-    int link_type_i = std::stoi(components[3]);
-    level_link_type link_type = (level_link_type)link_type_i;
+    int level_id = level_id_r.unwrap();
+
+    auto level_type_r = geode::utils::numFromString<int>(components[1]);
+    if(!level_type_r.isOk()) {
+        geode::log::error("Failed to parse level type argument!");
+        return invalid;
+    }
+    
+    level_link_type level_type = (level_link_type)(level_type_r.unwrap());
+
+    auto link_id_r = geode::utils::numFromString<int>(components[2]);
+    if(!link_id_r.isOk()) {
+        geode::log::error("Failed to parse link id argument!");
+        return invalid;
+    }
+    
+    int link_id = link_id_r.unwrap();
+
+    auto link_type_r = geode::utils::numFromString<int>(components[3]);
+    if(!link_type_r.isOk()) {
+        geode::log::error("Failed to parse link type argument!");
+        return invalid;
+    }
+
+    level_link_type link_type = (level_link_type)(link_type_r.unwrap());
 
     return {
         .level_id = level_id,
