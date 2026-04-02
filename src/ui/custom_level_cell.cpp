@@ -99,7 +99,8 @@ void custom_level_cell::update_display(GJGameLevel* level) {
             );
         }
     
-        if(level->m_levelType != GJLevelType::Editor) {
+        /* Weird workaround since offline levels render with a feature glow (probably EditorIDs) */
+        if((level->m_levelType != GJLevelType::Editor) || (level_icon != 0)) {
             this->m_difficulty->updateFeatureStateFromLevel(level);
         }
     }

@@ -22,7 +22,7 @@ void linking_manager::break_link(int level_id) {
         this->load_links();
     }
 
-    std::erase_if(this->m_data, [&](const auto& a){
+    std::erase_if(this->m_data, [&](const level_link_data& a) -> bool{
         return (a.level_id == level_id) || (a.link_id == level_id);
     });
     this->save_links();
@@ -73,7 +73,6 @@ void linking_manager::load_links() {
 
 void linking_manager::save_links() {
     std::string save = ll::parser::save_links(this->m_data);
-
     MOD->setSavedValue("level_links", save);
 }
 

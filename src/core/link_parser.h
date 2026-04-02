@@ -2,11 +2,11 @@
 #define LINK_PARSER_H
 
 /* Level link format:
-    * Simple string: "lsta_12345,0,23456,1;"
-    * ;     <- end current link
-    * id,0  <- editor link
-    * id,1  <- online link  
-*/
+ * Simple string: "lsta_12345,0,23456,1;"
+ * ;     <- end current link
+ * id,0  <- editor link
+ * id,1  <- online link  
+ */
 
 #include "types.h"
 

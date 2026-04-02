@@ -29,6 +29,7 @@ level_downloader* level_downloader::download() {
     return this;
 }
 
+/* I'll look more into this, if there's a way to avoid searching through all saved */
 bool level_downloader::check_saved_levels() {
     auto* glm = GameLevelManager::sharedState();
     cocos2d::CCArray* array = glm->getSavedLevels(false, 0);

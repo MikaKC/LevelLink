@@ -3,4 +3,4 @@
 Features:
 - Create & break level links between two levels
 - Query editor & online levels using a custom interface
-- Search through editor & online levels by name or level id
+- Access levels through the level download page or level edit page

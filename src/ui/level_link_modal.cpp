@@ -15,6 +15,8 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
     CCTouchDispatcher::get()->registerForcePrio(this, 2);
 
     if (!this->initWithColor({ 0, 0, 0, 105 })) return false;
+    
+    this->setID(LL_ID_MODAL);
 
     auto winSize = CCDirector::get()->getWinSize();
     
@@ -182,6 +184,7 @@ void level_link_modal::setup_modal_ui() {
         3.f*(this->m_mainLayer->getScaledContentSize().height / 4) - 10.f
     });
 
+    this->m_selected_level = nullptr;
     this->m_selected_cell = custom_level_cell::create(nullptr, this, true);
     this->m_mainLayer->addChild(this->m_selected_cell);
     this->m_selected_cell->setID(LL_ID_MODAL_SELECTED_CELL);
@@ -231,11 +234,12 @@ void level_link_modal::setup_level_scroll() {
 
 /* Button callbacks */
 void level_link_modal::on_link_btn_pressed(CCObject* obj) {
-    /* We've all written bad code... */
     if(!this->m_parent_ui) {
         geode::log::error("Failed to fetch ui!");
         return;
     }
+
+    geode::log::debug("test 1");
 
     if(!this->m_selected_level) {
         FLAlertLayer::create(
@@ -246,28 +250,39 @@ void level_link_modal::on_link_btn_pressed(CCObject* obj) {
         return;
     }
 
+    geode::log::debug("test 2");
+
+    if(!this->m_current_level) {
+
+    }
+
+    geode::log::debug("test 3");
+
     auto id_for_type = [&](level_link_type type, GJGameLevel* level) -> int {
-        if(type == level_link_type::editor) {
-            return EditorIDs::getID(level);
-        } else if(type == level_link_type::online) {
-            return level->m_levelID;
-        } else {
-            return -1;
-        }
+        if(type == level_link_type::editor) return EditorIDs::getID(level);
+        else if(type == level_link_type::online) return level->m_levelID;
+        else return -1;
     };
-    
+
     GJGameLevel* current_level = this->m_current_level;
     level_link_type current_level_type = (this->m_current_level->m_levelType == GJLevelType::Editor) ? level_link_type::editor : level_link_type::online;
+    geode::log::debug("test 4");
     int current_level_id = id_for_type(current_level_type, current_level);
+    geode::log::debug("test 5: {}", current_level_id);
     int selected_level_id = id_for_type(this->m_type, this->m_selected_level);
+    geode::log::debug("test 6: {}", selected_level_id);
     
     bool is_duplicate = false;
     const std::vector<level_link_data>& all_entries = linking_manager::get().get_all_links();
-    for(const auto& entry : all_entries) {
-        if((entry.level_id == selected_level_id) || (entry.link_id == selected_level_id)) {
-            is_duplicate = true;
+    const auto& link = std::find_if(
+        all_entries.begin(), 
+        all_entries.end(), 
+        [&](const level_link_data& a) -> bool {
+            return (a.level_id == selected_level_id) || (a.link_id == selected_level_id); 
         }
-    }
+    );
+
+    if(link != all_entries.end()) is_duplicate = true;
 
     if(is_duplicate) {
         FLAlertLayer::create(
@@ -336,7 +351,7 @@ void level_link_modal::loadLevelsFailed(char const* error)  {
 
 /* State updates */
 void level_link_modal::update(float dt) {
-    /* Need to find a better way to handle this */
+    /* TODO: REWORK THIS AS SOON AS POSSIBLE FOR UPDATE 1.1.0 */
     if(this->m_schedule_update_display) {
         auto now = std::chrono::steady_clock::now();
         if(std::chrono::duration_cast<std::chrono::milliseconds>(now - this->m_last_search_time).count() >= 500) {

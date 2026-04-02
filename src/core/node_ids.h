@@ -11,12 +11,13 @@
 #define LL_ID_CELL_SELECT_BTN "ll_cell_select_btn"
 #define LL_ID_CELL_BUTTON_MENU "ll_cell_menu"
 
-#define LL_ID_MODAL_LINK_BTN "ll_modal_link_btn"
-#define LL_ID_MODAL_TYPE_LABEL "ll_modal_type_label"
-#define LL_ID_MODAL_TYPE_COMBO "ll_modal_type_combo"
-#define LL_ID_MODAL_BUFFER_CIRCLE "ll_modal_buffer_circle"
-#define LL_ID_MODAL_SEARCH "ll_modal_search"
-#define LL_ID_MODAL_SELECTED_CELL "ll_modal_selected_cell"
-#define LL_ID_MODAL_SCROLL "ll_modal_level_list"
+#define LL_ID_MODAL "ll_link_modal"
+#define LL_ID_MODAL_LINK_BTN "ll_link_modal_link_btn"
+#define LL_ID_MODAL_TYPE_LABEL "ll_link_modal_type_label"
+#define LL_ID_MODAL_TYPE_COMBO "ll_link_modal_type_combo"
+#define LL_ID_MODAL_BUFFER_CIRCLE "ll_link_modal_buffer_circle"
+#define LL_ID_MODAL_SEARCH "ll_link_modal_search"
+#define LL_ID_MODAL_SELECTED_CELL "ll_link_modal_selected_cell"
+#define LL_ID_MODAL_SCROLL "ll_link_modal_level_list"
 
 #endif

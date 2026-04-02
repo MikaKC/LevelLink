@@ -43,7 +43,6 @@ private:
     void ccTouchMoved(cocos2d::CCTouch*, cocos2d::CCEvent*) override;
     void ccTouchEnded(cocos2d::CCTouch*, cocos2d::CCEvent*) override;
     
-    /* Somehow this fixes touches, what?????????????? */
     void registerWithTouchDispatcher() override;
 
     float get_combined_label_heights();

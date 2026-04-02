@@ -197,6 +197,7 @@ void combo_box::onExit() {
     cocos2d::CCLayer::onExit();
 }
 
+/* Idk why this fixes touches ngl */
 void combo_box::registerWithTouchDispatcher() {
     cocos2d::CCTouchDispatcher* dispatcher = CCDirector::sharedDirector()->getTouchDispatcher();
     dispatcher->addTargetedDelegate(this, cocos2d::kCCMenuHandlerPriority - 1, true);

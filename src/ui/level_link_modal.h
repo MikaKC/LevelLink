@@ -19,7 +19,7 @@ namespace ll {
 class custom_level_cell;
 class level_link_modal : public FLAlertLayer, public FLAlertLayerProtocol, public LevelManagerDelegate {
 public:
-    /* If layer_ui is null, I'm fucked */
+    /* Hacky way of allowing this to interface with it's parent's layer */
     bool init(GJGameLevel* current_level, link_ui& layer_ui);
     void set_selected_level(GJGameLevel* level);
 
