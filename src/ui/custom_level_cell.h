@@ -22,6 +22,7 @@ private:
     /* UI Elements */
     GJDifficultySprite* m_difficulty;
     CCLabelBMFont* m_name_text;
+    CCLabelBMFont* m_id_text;
     ButtonSprite* m_select_btn_sprite;
 
     bool m_no_select_btn;

@@ -19,15 +19,17 @@ bool level_info_layer_hook::init(GJGameLevel* level, bool challenge) {
 
     bool ret = ll::init(this, this->m_level, ui);
 
+    /* Ugly positioning to get it next to the difficulty face */
     CCNode* difficulty_sprite = this->m_difficultySprite;
     ui.buttons_menu->setPosition(CCPoint {
         difficulty_sprite->getPositionX() - 
         difficulty_sprite->getScaledContentSize().width - 
-        ui.buttons_menu->getScaledContentSize().width*0.5f - 
+        (ui.buttons_menu->getScaledContentSize().width / 2) - 
         10.f,
         visible_size.height / 2
     });
 
+    /* Because ll::init doesn't set selector funcs, we do it ourselves */
     ui.create_link_btn->setTarget(this, menu_selector(level_info_layer_hook::on_modal_btn_pressed));
     ui.open_link_btn->setTarget(this, menu_selector(level_info_layer_hook::on_open_btn_pressed));
     ui.break_link_btn->setTarget(this, menu_selector(level_info_layer_hook::on_unlink_btn_pressed));
@@ -36,7 +38,7 @@ bool level_info_layer_hook::init(GJGameLevel* level, bool challenge) {
 }
 
 void level_info_layer_hook::on_modal_btn_pressed(CCObject* obj) {
-    level_link_modal::create(this->m_level, this->m_fields->m_ui)->show();
+    level_link_modal::create(this->m_level, &this->m_fields->m_ui)->show();
 }
 
 void level_info_layer_hook::on_open_btn_pressed(CCObject* obj) {

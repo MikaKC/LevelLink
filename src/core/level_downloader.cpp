@@ -35,6 +35,8 @@ bool level_downloader::check_saved_levels() {
     cocos2d::CCArray* array = glm->getSavedLevels(false, 0);
     for(auto* level : CCArrayExt(array)) {
         GJGameLevel* real = static_cast<GJGameLevel*>(level);
+        
+        /* Since savedLevels are online only, we don't need to get the "real" level_id */
         if(real->m_levelID == this->m_level_id) {
             this->levelDownloadFinished(real);
             return true;

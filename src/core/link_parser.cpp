@@ -95,23 +95,23 @@ level_link_data load_link(const std::string& link) {
 }
 
 std::string save_link(level_link_data link) {
-    std::string level_id = std::to_string(link.level_id);
-    std::string level_type = std::to_string((int)link.level_type);
+    std::string level_id = geode::utils::numToString<int>(link.level_id);
+    std::string level_type = geode::utils::numToString<int>((int)link.level_type);
     
-    std::string link_id = std::to_string(link.link_id);
-    std::string link_type = std::to_string((int)link.link_type);
+    std::string link_id = geode::utils::numToString<int>(link.link_id);
+    std::string link_type = geode::utils::numToString<int>((int)link.link_type);
 
-    auto add_arg = [](std::stringstream& o, const std::string& v, bool end_def = false) -> void {
+    auto push_argument = [](std::stringstream& o, const std::string& v, bool end_def = false) -> void {
         const char delimitor = (!end_def) ? LL_ARGUMENT_SEPARATOR : LL_DEFINITION_SEPARATOR;
         o << v;
         o << delimitor;
     };
 
     std::stringstream out{};
-    add_arg(out, level_id);
-    add_arg(out, level_type);
-    add_arg(out, link_id);
-    add_arg(out, link_type, true);
+    push_argument(out, level_id);
+    push_argument(out, level_type);
+    push_argument(out, link_id);
+    push_argument(out, link_type, true);
     
     return out.str();
 }

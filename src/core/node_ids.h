@@ -8,6 +8,7 @@
 
 #define LL_ID_CELL_DIFFICULTY "ll-cell-difficulty-face"
 #define LL_ID_CELL_NAME_LABEL "ll-cell-name-label"
+#define LL_ID_CELL_ID_LABEL "ll-cell-id-label"
 #define LL_ID_CELL_SELECT_BTN "ll-cell-select-btn"
 #define LL_ID_CELL_BUTTON_MENU "ll-cell-menu"
 

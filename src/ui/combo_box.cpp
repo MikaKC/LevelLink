@@ -8,7 +8,7 @@ bool combo_box::init() {
 
     this->detected_body_touch = false;
     this->is_open = false;
-    this->label_callback = NULL;
+    this->label_callback = nullptr;
     this->combo_labels = {};
 
     this->combo_bg = geode::NineSlice::create("square02b_001.png", { 0, 0, 80, 80 });

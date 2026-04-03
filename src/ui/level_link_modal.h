@@ -9,7 +9,6 @@ using namespace geode::prelude;
 #include "../core/types.h"
 
 #include "../utils/utils.h"
-#include "../utils/button_sprite_utils.h"
 
 #include "../hooks/level_info_layer_hook.h"
 #include "../hooks/edit_level_layer_hook.h"
@@ -19,13 +18,12 @@ namespace ll {
 class custom_level_cell;
 class level_link_modal : public FLAlertLayer, public FLAlertLayerProtocol, public LevelManagerDelegate {
 public:
-    /* Hacky way of allowing this to interface with it's parent's layer */
-    bool init(GJGameLevel* current_level, link_ui& layer_ui);
+    bool init(GJGameLevel* current_level, link_ui* layer_ui);
     void set_selected_level(GJGameLevel* level);
 
-    static level_link_modal* create(GJGameLevel* current_level, link_ui& layer_ui);
+    static level_link_modal* create(GJGameLevel* current_level, link_ui* layer_ui);
     
-    void update(float dt);
+    void update_search(float dt);
 
 private:
     void setup_modal_ui();
@@ -67,15 +65,12 @@ private:
     CCLabelBMFont* m_selected_cell_header;
     custom_level_cell* m_selected_cell;
 
-    bool m_schedule_update_display;
+    bool m_scheduled_update_display;
     level_link_type m_type;
     link_ui* m_parent_ui;
 
     GJGameLevel* m_current_level;
     GJGameLevel* m_selected_level;
-
-    /* Stupid hack */
-    std::chrono::steady_clock::time_point m_last_search_time;
 };
 
 }

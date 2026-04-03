@@ -10,7 +10,7 @@
 namespace ll {
 
 /* Setups */
-bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui) {
+bool level_link_modal::init(GJGameLevel* current_level, link_ui* current_link_ui) {
     CCSize layer_size = CCSize { 400, 250 };
     CCTouchDispatcher::get()->registerForcePrio(this, 2);
 
@@ -21,7 +21,7 @@ bool level_link_modal::init(GJGameLevel* current_level, link_ui& current_link_ui
     auto winSize = CCDirector::get()->getWinSize();
     
     this->m_current_level = current_level;
-    this->m_parent_ui = &current_link_ui;
+    this->m_parent_ui = current_link_ui;
 
     this->m_mainLayer = CCLayer::create();
     this->addChild(this->m_mainLayer);
@@ -84,7 +84,7 @@ void level_link_modal::setup_modal_ui() {
     ButtonSprite* link_spr = ButtonSprite::create(
         "Link", 
         "goldFont.fnt",
-        ll::utils::get_btn_texture_for_base(ll::utils::button_sprite_base::green)
+        "GJ_button_01.png"
     );
 
     CCMenuItemSpriteExtra* link_btn = CCMenuItemSpriteExtra::create(
@@ -159,21 +159,26 @@ void level_link_modal::setup_modal_ui() {
     this->m_loading_circle->setVisible(false);
 
     /* Id & Search input */
-    this->m_schedule_update_display = false;
+    this->m_scheduled_update_display = false;
 
     this->m_id_search_input = TextInput::create(200, "Search...");
     this->m_id_search_input->setID(LL_ID_MODAL_SEARCH);
 
     this->m_id_search_input->setCallback([&](const std::string& ret) {
+        static auto last_search_time = std::chrono::steady_clock::now();
         auto now = std::chrono::steady_clock::now();
         
         this->m_loading_circle->setVisible(true);
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(now - this->m_last_search_time).count() < 500) {
-            this->m_schedule_update_display = true;
+        if(std::chrono::duration_cast<std::chrono::milliseconds>(now - last_search_time).count() < 500) {
+            if(this->m_scheduled_update_display) return;
+            
+            this->scheduleOnce(schedule_selector(level_link_modal::update_search), 0.5f);
+            this->m_scheduled_update_display = true;
+            
             return;
         }
 
-        this->m_last_search_time = now;
+        last_search_time = now;
         
         this->update_display();
     });
@@ -242,38 +247,31 @@ void level_link_modal::on_link_btn_pressed(CCObject* obj) {
         return;
     }
 
-    geode::log::debug("test 1");
-
     if(!this->m_selected_level) {
         FLAlertLayer::create(
-            "Error", 
-            "No level selected! Please select a level to link.", 
+            "Warning", 
+            "No <cy>level</c> selected! Please select a level to link.", 
             "Ok"
         )->show();
         return;
     }
 
-    geode::log::debug("test 2");
-
     if(!this->m_current_level) {
-
+        FLAlertLayer::create(
+            "Error",
+            "Current level <cr>isn't</c> found! This isn't <cy>your</c> fault!",
+            "Ok"
+        )->show();
+        return;
     }
 
-    geode::log::debug("test 3");
-
-    auto id_for_type = [&](level_link_type type, GJGameLevel* level) -> int {
-        if(type == level_link_type::editor) return EditorIDs::getID(level);
-        else if(type == level_link_type::online) return level->m_levelID;
-        else return -1;
-    };
-
     GJGameLevel* current_level = this->m_current_level;
-    level_link_type current_level_type = (this->m_current_level->m_levelType == GJLevelType::Editor) ? level_link_type::editor : level_link_type::online;
-    geode::log::debug("test 4");
-    int current_level_id = id_for_type(current_level_type, current_level);
-    geode::log::debug("test 5: {}", current_level_id);
-    int selected_level_id = id_for_type(this->m_type, this->m_selected_level);
-    geode::log::debug("test 6: {}", selected_level_id);
+    
+    level_link_type current_level_type = level_link_type::online;
+    if(current_level->m_levelType == GJLevelType::Editor) current_level_type = level_link_type::editor;
+
+    int current_level_id = ll::utils::get_real_level_id(current_level);
+    int selected_level_id = ll::utils::get_real_level_id(this->m_selected_level);
     
     bool is_duplicate = false;
     const std::vector<level_link_data>& all_entries = linking_manager::get().get_all_links();
@@ -289,8 +287,8 @@ void level_link_modal::on_link_btn_pressed(CCObject* obj) {
 
     if(is_duplicate) {
         FLAlertLayer::create(
-            "Error",
-            "Link already exists!",
+            "Warning",
+            "Link <cy>already</c> exists!",
             "Ok"
         )->show();
         return;
@@ -305,12 +303,13 @@ void level_link_modal::on_link_btn_pressed(CCObject* obj) {
 
     linking_manager::get().create_link(data);
     linking_manager::get().set_current_data(data);
-    ll::update_ui_draw(*this->m_parent_ui, true);
+    ll::update_ui_draw(*(this->m_parent_ui), true);
 
+    /* We close the modal after pressing okay, hence passing this as delegate */
     FLAlertLayer::create(
         this,
         "Success", 
-        "Created <cy>link</c> successfully!", 
+        "Created link <cg>successfully</c>!", 
         "Ok",
         NULL
     )->show();
@@ -353,18 +352,14 @@ void level_link_modal::loadLevelsFailed(char const* error)  {
 }
 
 /* State updates */
-void level_link_modal::update(float dt) {
-    /* TODO: REWORK THIS AS SOON AS POSSIBLE FOR UPDATE 1.1.0 */
-    if(this->m_schedule_update_display) {
-        auto now = std::chrono::steady_clock::now();
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(now - this->m_last_search_time).count() >= 500) {
-            this->update_display();
-        }
+void level_link_modal::update_search(float dt) {
+    if(this->m_scheduled_update_display) {
+        this->update_display();
     }
 }
 
 void level_link_modal::update_display() {
-    this->m_schedule_update_display = false;
+    this->m_scheduled_update_display = false;
     if(this->m_type == level_link_type::editor) this->update_editor_scroll();
     else if(this->m_type == level_link_type::online) this->update_online_scroll();
 }
@@ -462,7 +457,7 @@ void level_link_modal::set_selected_level(GJGameLevel* level) {
     this->update_selected_level();
 }
 
-level_link_modal* level_link_modal::create(GJGameLevel* current_level, link_ui& ui) {
+level_link_modal* level_link_modal::create(GJGameLevel* current_level, link_ui* ui) {
     auto* modal = new level_link_modal;
     if(modal && modal->init(current_level, ui)) {
         modal->autorelease();

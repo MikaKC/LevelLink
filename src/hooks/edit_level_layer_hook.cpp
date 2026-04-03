@@ -19,6 +19,7 @@ bool edit_level_layer_hook::init(GJGameLevel* level) {
     level_edit_menu->addChild(ui.buttons_menu);
     level_edit_menu->updateLayout();
 
+    /* Because ll::init doesn't set selector funcs, we do it ourselves */
     ui.create_link_btn->setTarget(this, menu_selector(edit_level_layer_hook::on_modal_btn_pressed));
     ui.open_link_btn->setTarget(this, menu_selector(edit_level_layer_hook::on_open_btn_pressed));
     ui.break_link_btn->setTarget(this, menu_selector(edit_level_layer_hook::on_unlink_btn_pressed));
@@ -31,14 +32,11 @@ void edit_level_layer_hook::on_open_btn_pressed(CCObject* obj) {
 }
 
 void edit_level_layer_hook::on_modal_btn_pressed(CCObject* obj) {
-    level_link_modal::create(this->m_level, this->m_fields->m_ui)->show();
+    level_link_modal::create(this->m_level, &this->m_fields->m_ui)->show();
 }
-
 
 void edit_level_layer_hook::on_unlink_btn_pressed(CCObject* obj) {
     ll::on_break_btn_pressed(this->m_fields->m_ui);
 }
 
 }
-
-

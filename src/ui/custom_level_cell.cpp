@@ -3,9 +3,9 @@
 #include "level_link_modal.h"
 #include "../core/node_ids.h"
 
-#include "../utils/button_sprite_utils.h"
 
 namespace ll {
+
 bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool no_select_btn) {
     this->m_layer_size = CCSize { 200, 35 };
     if(no_select_btn) this->m_layer_size.width = 120;
@@ -31,10 +31,14 @@ bool custom_level_cell::init(GJGameLevel* level, level_link_modal* layer, bool n
     
     this->m_name_text->setID(LL_ID_CELL_NAME_LABEL);
 
+    this->m_id_text = CCLabelBMFont::create("", "chatFont.fnt");
+    this->addChild(this->m_id_text, 1);
+    this->m_id_text->setID(LL_ID_CELL_ID_LABEL);
+
     this->m_select_btn_sprite = ButtonSprite::create(
-        "Select", 
-        "bigFont.fnt", 
-        ll::utils::get_btn_texture_for_base(ll::utils::button_sprite_base::green)
+        "Select",
+        "bigFont.fnt",
+        "GJ_button_01.png"
     );
     this->m_select_btn_sprite->setScale(0.5f);
 
@@ -81,7 +85,7 @@ void custom_level_cell::update_display(GJGameLevel* level) {
             else if(level->m_stars > 3 && level->m_stars < 6) level_icon = 3; /* Hard */
             else if(level->m_stars > 5 && level->m_stars < 8) level_icon = 4; /* Harder */
             else if(level->m_stars > 7 && level->m_stars < 10) level_icon = 5; /* Insane */
-            else if(level->m_stars > 9) level_icon = 6; /* Demon (although it changes below if demon) */
+            else if(level->m_stars > 9) level_icon = 6; /* Demon */
             else level_icon = -1; /* Auto is -1, apparently... */
         } else {
             /* Levels with no stars get the avg difficulty's face */
@@ -112,6 +116,20 @@ void custom_level_cell::update_display(GJGameLevel* level) {
         (this->m_difficulty->getScaledContentSize().width / 2) + border_padding, 
         this->m_layer_size.height / 2 
     });
+
+    int level_id = 0;
+    if(!no_level) level_id = ll::utils::get_real_level_id(level);
+
+    std::string level_id_str = geode::utils::numToString<int>(level_id);
+
+    this->m_id_text->setString(std::string("#" + level_id_str).c_str());
+    this->m_id_text->setScale(0.5f);
+    this->m_id_text->setOpacity(100u);
+    this->m_id_text->setAnchorPoint(CCPoint { 0.f, 0.5f });
+    this->m_id_text->setPosition(CCPoint {
+        this->m_difficulty->getScaledContentSize().width + (border_padding * 2),
+        this->m_layer_size.height / 2 - (this->m_id_text->getScaledContentHeight() / 2) - 2.f
+    });
     
     std::string level_name = "None";
     if(!no_level) {
@@ -123,15 +141,15 @@ void custom_level_cell::update_display(GJGameLevel* level) {
     this->m_name_text->setAnchorPoint(CCPoint { 0.f, 0.5f });
     this->m_name_text->setPosition(CCPoint { 
         this->m_difficulty->getScaledContentSize().width + (border_padding * 2), 
-        this->m_layer_size.height / 2 
+        this->m_layer_size.height / 2 + (this->m_id_text->getScaledContentHeight() / 2) + 2.f
     });
 
     CCSize real_name_size = this->m_name_text->getContentSize();
     CCSize curr_name_size = this->m_name_text->getScaledContentSize();
     float desired_name_width = this->m_layer_size.width - 
-    this->m_difficulty->getScaledContentSize().width -
-    (this->m_no_select_btn ? 0 : this->m_select_btn_sprite->getScaledContentSize().width) -
-    (border_padding * 4);
+        this->m_difficulty->getScaledContentSize().width -
+        (this->m_no_select_btn ? 0 : this->m_select_btn_sprite->getScaledContentSize().width) -
+        (border_padding * 4);
     
     float desired_scale = this->m_name_text->getScale();
     

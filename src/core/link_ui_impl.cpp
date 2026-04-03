@@ -5,20 +5,22 @@
 
 #include "node_ids.h"
 
+#include "../utils/utils.h"
+
 #include <cvolton.level-id-api/include/EditorIDs.hpp>
 
 namespace ll {
 
 bool init(CCLayer* self, GJGameLevel* level, ll::link_ui& ui) {
-    int level_id = level->m_levelID;
-    if(level->m_levelType == GJLevelType::Editor) level_id = EditorIDs::getID(level);
-    
+    int level_id = ll::utils::get_real_level_id(level);
+    if(level_id == -1) return false;
+
     bool found_link = false;
     level_link_data link_data = ll::load_data(level_id, found_link);
     linking_manager::get().set_current_data(link_data);
 
     ll::create_ui(self, ui);
-    ll::layout_ui(ui, ll::link_ui_orientation::portrait); /* This can be called again for other orientations */
+    ll::layout_ui(ui);
 
     self->addChild(ui.buttons_menu, 10);
 
@@ -43,23 +45,23 @@ level_link_data load_data(int self_id, bool& found_data) {
     return data;
 }
 
-void create_ui(CCLayer* self, link_ui& btns) {    
+void create_ui(CCLayer* self, link_ui& btns) {
     bool use_text_buttons = Mod::get()->getSettingValue<bool>("use-text-buttons");
     
-    auto generic_button_sprite_func = [&](const char* sprite, const char* alias) -> CCNode* {
-        CCNode* out = NULL;
+    auto create_aliased_btn = [&](const char* sprite, const char* alias) -> CCNode* {
+        CCNode* out = nullptr;
         if(use_text_buttons) out = create_circle_btn(alias);
         else out = CCSprite::createWithSpriteFrameName(sprite);
 
         if(!out) {
             geode::log::error("Failed to get sprite for button!");
-            return NULL;
+            return nullptr;
         }
 
         return out;
     };
 
-    CCNode* modal_spr = generic_button_sprite_func("gj_linkBtn_001.png", "Link");
+    CCNode* modal_spr = create_aliased_btn("gj_linkBtn_001.png", "Link");
     if(!use_text_buttons) modal_spr->setScale(1.25f);
 
     btns.create_link_btn = CCMenuItemSpriteExtra::create(
@@ -70,7 +72,7 @@ void create_ui(CCLayer* self, link_ui& btns) {
 
     btns.create_link_btn->setID(LL_ID_LINK_BTN);
 
-    CCNode* open_spr = generic_button_sprite_func("GJ_playBtn2_001.png", "Open");
+    CCNode* open_spr = create_aliased_btn("GJ_playBtn2_001.png", "Open");
     if(!use_text_buttons) open_spr->setScale(0.6f);
 
     btns.open_link_btn = CCMenuItemSpriteExtra::create(
@@ -80,7 +82,7 @@ void create_ui(CCLayer* self, link_ui& btns) {
     );
     btns.open_link_btn->setID(LL_ID_OPEN_BTN);
 
-    CCNode* unlink_spr = generic_button_sprite_func("gj_linkBtnOff_001.png", "Unlk");
+    CCNode* unlink_spr = create_aliased_btn("gj_linkBtnOff_001.png", "Unlk");
     
     btns.break_link_btn = CCMenuItemSpriteExtra::create(
         unlink_spr,
@@ -97,17 +99,14 @@ void create_ui(CCLayer* self, link_ui& btns) {
     btns.buttons_menu->addChild(btns.break_link_btn);
 }
 
-void layout_ui(link_ui& btns, link_ui_orientation orientation) {
+void layout_ui(link_ui& btns) {
     bool use_text_buttons = Mod::get()->getSettingValue<bool>("use-text-buttons");
 
     float btn_width = btns.open_link_btn->getScaledContentWidth();
     float btn_height = btns.open_link_btn->getScaledContentHeight();
     
     float menu_width = btn_width;
-    float menu_height = btn_height;
-
-    if(orientation == link_ui_orientation::landscape) menu_width *= 2;
-    else if(orientation == link_ui_orientation::portrait) menu_height *= 2;
+    float menu_height = btn_height * 2;
 
     btns.buttons_menu->setContentSize(CCSize {
         menu_width,
@@ -119,20 +118,17 @@ void layout_ui(link_ui& btns, link_ui_orientation orientation) {
         btns.buttons_menu->getScaledContentSize().height / 2
     });
 
-    float btn_x = menu_width * 0.5f;
-    float btn_y = menu_height * 0.5f;
-
-    if(orientation == link_ui_orientation::landscape) btn_x = menu_width * 0.25f;
-    else if(orientation == link_ui_orientation::portrait) btn_y = menu_height * 0.25f; 
-
     if(use_text_buttons) {
+        float btn_x = menu_width / 2;
+        float btn_y = menu_height / 4;
+
         btns.open_link_btn->setPosition(CCPoint {
             btn_x,
-            orientation == link_ui_orientation::landscape ? btn_y : btn_y * 3
+            btn_y * 3.f
         });
 
         btns.break_link_btn->setPosition(CCPoint {
-            orientation == link_ui_orientation::landscape ? btn_x * 3 : btn_x,
+            btn_x,
             btn_y,
         });
     } else {
@@ -149,7 +145,16 @@ void layout_ui(link_ui& btns, link_ui_orientation orientation) {
     }
 }
 
+bool _ui_is_valid(const link_ui& btns) {
+    if(btns.open_link_btn == nullptr) return false;
+    else if(btns.break_link_btn == nullptr) return false;
+    else if(btns.create_link_btn == nullptr) return false;
+    return true;
+}
+
 void update_ui_draw(const link_ui& btns, bool found_link) {
+    if(!_ui_is_valid(btns)) return;
+    
     btns.open_link_btn->setEnabled(found_link);
     btns.open_link_btn->setVisible(found_link);
 
@@ -162,7 +167,9 @@ void update_ui_draw(const link_ui& btns, bool found_link) {
 
 void on_open_btn_pressed(GJGameLevel* self) {
     level_link_data data = linking_manager::get().get_current_data();
-    bool is_link = (data.link_id == self->m_levelID);
+    
+    int self_id = ll::utils::get_real_level_id(self); 
+    bool is_link = (data.link_id == self_id);
     
     level_link_type target_type = is_link ? data.level_type : data.link_type;
     int target_id = is_link ? data.level_id : data.link_id;
