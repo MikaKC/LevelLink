@@ -10,7 +10,7 @@
 	"name": "Level Link",
 	"version": "v1.0.1",
 	"developer": "MikaKC",
-	"description": "Link two levels and access them with the click of a button!",
+	"description": "Link levels with the click of a button!",
 	"links": {
 		"source": "https://github.com/MikaKC/LevelLink"
 	},
